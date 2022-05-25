@@ -1,0 +1,29 @@
+{
+  "name": "logs-streaming",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'nothing here, yet.'",
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flowck/logs-streaming.git"
+  },
+  "author": "Firmino Changani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flowck/logs-streaming/issues"
+  },
+  "homepage": "https://github.com/flowck/logs-streaming#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "socket.io": "^4.5.1"
+  },
+  "optionalDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
