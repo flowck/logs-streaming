@@ -1,6 +1,6 @@
 # `logs-streaming`
 
-Demo implementation of a service that streams the output of a spawned child process using Web Sockets.
+Demo implementation of a service that streams the output of a job using Web Sockets.
 
 ## Requirements
 
@@ -9,8 +9,15 @@ Demo implementation of a service that streams the output of a spawned child proc
 - The job's output logs must be processed without blocking new requests to the service;
 - At any given point any client must be able to subscribe to a job's output logs created by another client;
 
+![Logs streaming demo](./docs/logs-streaming.gif)
+
 ## How to run
 
-1 - Install the dependencies of `client` and `server` app;
-2 - Run `npm run start` on each app;
-3 - Open the client from the following URL: [http://localhost:8080](http://localhost:8080)
+- Install the dependencies of `client` and `server` app;
+- Run `npm run start` on each app;
+- Open the client from the following URL: [http://localhost:8080](http://localhost:8080)
+
+## Glossary
+
+- Job: any action performed on the server whose processing is detached an HTTP response; E.g.: Counting from 0 to 50;
+- Client: any application that connects to the backend via web socket;
