@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log Streaming</title>
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Logs streaming</h1>
+    </header>
+
+    <section class="control">
+      <button id="btnCreateNewJob">Create new job</button>
+      <span>or</span>
+      <input id="inpJobId" type="text" placeholder="Paste job id" />
+      <button id="btnJoinRunningJob">Join running job</button>
+    </section>
+
+    <ul id="logsContainer" class="logs-container"></ul>
+
+    <!-- SCRIPTS -->
+    <script src="/node_modules/socket.io/client-dist/socket.io.min.js"></script>
+    <script>
+      const WS_API = "http://localhost:4000";
+      const socket = new io(WS_API);
+      let job = null;
+      let isLoading = false;
+
+      // Ui elements
+      const btnCreateNewJob = document.querySelector("#btnCreateNewJob");
+      const logsContainer = document.querySelector("#logsContainer");
+      const btnJoinRunningJob = document.querySelector("#btnJoinRunningJob");
+      const inpJobId = document.querySelector("#inpJobId");
+
+      function toggleLoader() {
+        if (!isLoading) {
+          isLoading = true;
+          return (btnCreateNewJob.innerHTML = "Is loading");
+        }
+
+        isLoading = false;
+        return (btnCreateNewJob.innerHTML = "Create new job");
+      }
+
+      // Event handlers
+      btnCreateNewJob.addEventListener("click", () => {
+        toggleLoader();
+        fetch(`${WS_API}/jobs`, { method: "POST" })
+          .then((res) => res.json())
+          .then((data) => {
+            job = data;
+            console.log(`Job ${job.id} has just been created`);
+            subscribeToJobLogs(job.id);
+            toggleLoader();
+          })
+          .catch((error) => console.log(error));
+      });
+
+      btnJoinRunningJob.addEventListener("click", () => {
+        if (!inpJobId.value) {
+          return alert("Please provide a valid job id");
+        }
+
+        subscribeToJobLogs(inpJobId.value);
+      });
+
+      function subscribeToJobLogs(jobId) {
+        socket.emit("SUBSCRIBE_JOB_LOGS", jobId);
+        console.log("Subscribed to logs from job id", jobId);
+
+        socket.on("log", (logs) => {
+          console.log(logs);
+          const logEl = document.createElement("li");
+          logEl.innerText = logs;
+          logsContainer.appendChild(logEl);
+        });
+      }
+    </script>
+  </body>
+</html>
